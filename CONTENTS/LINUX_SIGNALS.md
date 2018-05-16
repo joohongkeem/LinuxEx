@@ -66,3 +66,45 @@ Linux Signals
 ![signalhandler](./../img/시그널핸들러.PNG)
 
 ### 시그널핸들러 실습
+
+#### 1. SIG_INT와 SIG_QUIT를 받는 시그널 핸들러
+```c
+#include<stdio.h>
+#include<signal.h>
+#include<unistd.h>
+#include<stdlib.h>
+
+static void sigHandler(int sig)
+{
+	static int count1 = 0; //SIG_INT을 count
+	static int count2 = 0; //SIG_QUIT을 count
+	{
+		if(sig == SIG_INT) //SIG_INT이면 실행
+		{
+			count1++;
+			printf("Caught SIGINT (%d)\n", count1);
+		}
+		else if(sig == SIG_QUIT) //SIG_QUIT이면 실행
+		{
+			count2++;
+			printf("Caught SIGQUIT (%d)\n", count2);
+		}
+		else //그외의 signal일때 실행
+			printf("Caught else signal\n");
+		return;
+	}
+	exit(0);
+}
+
+int main(int argc, char *argv[])
+{
+	if(signal(SIGINT, sigHandler) == SIG_ERR) //signal()이 호출이 되지 않았을 시 SIG_ERR를 리턴 => return -1
+		return -1;
+
+	if(signal(SIGQUIT, sigHandler) == SIG_ERR)
+		return -1;
+
+	for(;;) //무한 루프
+	pause(); //시그널 대기
+}
+```
