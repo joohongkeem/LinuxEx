@@ -1,1 +1,1 @@
-[Title](https://github.com/NaTaes/LinuxEx/blob/master/CONTENTS/LINUX_SIGNALS.md)
+# [Linux signal](https://github.com/NaTaes/LinuxEx/blob/master/CONTENTS/LINUX_SIGNALS.md)
