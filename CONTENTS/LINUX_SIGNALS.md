@@ -108,3 +108,64 @@ int main(int argc, char *argv[])
 	pause(); //시그널 대기
 }
 ```
+
+#### 2. SIG_INT시그널 다른 프로세스에 보내기
+```c
+//SIG_INT를 받는 코드
+#include<stdio.h>
+#include<signal.h>
+#include<unistd.h>
+
+void sigHandler(int sig)
+{
+	printf("\nkillTest:i got signal %d\n", sig);
+	(void)signal(SIG_INT, SIG_DFL);
+}
+
+int main(void)
+{
+	signal(SIG_INT, sigHandler);
+	while(1)
+	{
+		printf("Hello world\n");
+		sleep(1);
+	}
+}
+```
+```c
+//SIG_INT를 보내는 코드
+#include<signal.h>
+#include<string.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<errno.h>
+
+int main(int argc, char *argv[])
+{
+	int s, sig;
+	if(argc != 3 || strcmp(argv[1], "--help") == 0)
+		printf("%s pid sig-num\n", argv[0]);
+	sig = atoi(argv[2]);
+	s = kill(atoi(argv[1]), sig);
+
+	if(sig!=0)
+	{
+		if(s == -1)
+			printf("ERROR : system call kill\n");
+		else
+			if(s == 0)
+				printf("Process exists and we can send it a signal\n");
+			else
+			{
+				if(errno == EPERM)
+					printf("Process exists, but we don't have permission to send it a signal\n");
+				else if(errno == ESRCH)
+					printf("Process does not exist\n");
+				else
+					printf("kill\n");
+			}
+	}
+	return 0;
+}
+
+```
