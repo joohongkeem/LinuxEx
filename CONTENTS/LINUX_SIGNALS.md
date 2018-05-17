@@ -118,13 +118,13 @@ int main(int argc, char *argv[])
 
 void sigHandler(int sig)
 {
-	printf("\nkillTest:i got signal %d\n", sig);
-	(void)signal(SIG_INT, SIG_DFL);
+	printf("\nkillTest:i got signal %d\n", sig); //시그널 핸들러가 받은 시그널 번호를 출력한다.
+	(void)signal(SIG_INT, SIG_DFL); //SIG_INT를 SIG_DFL(디폴트) 기본값으로  재설정한다.
 }
 
 int main(void)
 {
-	signal(SIG_INT, sigHandler);
+	signal(SIG_INT, sigHandler); //SIG_INT를 시그널 핸들러로 등록한다.
 	while(1)
 	{
 		printf("Hello world\n");
@@ -143,19 +143,19 @@ int main(void)
 int main(int argc, char *argv[])
 {
 	int s, sig;
-	if(argc != 3 || strcmp(argv[1], "--help") == 0)
+	if(argc != 3 || strcmp(argv[1], "--help") == 0) //인자가 3개가 아니거나 첫번째 인자에 --help를 입력했을시 에러를 출력한다.
 		printf("%s pid sig-num\n", argv[0]);
-	sig = atoi(argv[2]);
-	s = kill(atoi(argv[1]), sig);
+	sig = atoi(argv[2]); //두번째 인자(시그널 번호)를 int로 변환해 준다.
+	s = kill(atoi(argv[1]), sig); //kill 함수로 첫번째인자인 시그널을 보낼 pid에 sig(보낼 시그널)을 보낸다.
 
 	if(sig!=0)
 	{
-		if(s == -1)
+		if(s == -1) //kill함수의 반환 값이 -1이라면 kill이 실행되지 않았다는 것이다.
 			printf("ERROR : system call kill\n");
 		else
-			if(s == 0)
+			if(s == 0) //반환 값이 0이라면 kill함수가 제대로 실행된것이다.
 				printf("Process exists and we can send it a signal\n");
-			else
+			else //그 외
 			{
 				if(errno == EPERM)
 					printf("Process exists, but we don't have permission to send it a signal\n");
